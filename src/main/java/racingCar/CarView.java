@@ -15,7 +15,7 @@ public class CarView {
 		this.racingCar = racingCar;
 	}
 
-	public void inputCarName() {
+	public List<String> inputCarName() {
 
 		System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉽표(,) 기준으로 구분");
 		String carName = scanner.nextLine();
@@ -25,6 +25,8 @@ public class CarView {
 		for (int i = 0; i < split.length; i++) {
 			racingCar.addCarListByName(split[i]);
 		}
+
+		return Arrays.asList(split);
 	}
 
 	public int inputTryNumAndReturnNum() {
