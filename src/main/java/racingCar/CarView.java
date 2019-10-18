@@ -1,60 +1,69 @@
 package racingCar;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class CarView {
 
 	private final Scanner scanner = new Scanner(System.in);
-	private String split[];
-	private int num;
-	int winnerListSize;
-	String resultPrintString = "";
-	private RacingCar racingCar;
-
-	public CarView(RacingCar racingCar) {
-		this.racingCar = racingCar;
-	}
 
 	public List<String> inputCarName() {
 
-		System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉽표(,) 기준으로 구분");
+		List<String> inputCarNameList = new ArrayList<String>();
+		String split[];
+
+		System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉽표(,) 기준으로 구분)");
 		String carName = scanner.nextLine();
 
 		split = carName.split(",");
 
-		for (int i = 0; i < split.length; i++) {
-			racingCar.addCarListByName(split[i]);
-		}
+		Arrays.stream(split).forEach(i -> {
+			inputCarNameList.add(i);
+		});
 
-		return Arrays.asList(split);
+		return inputCarNameList;
 	}
 
 	public int inputTryNumAndReturnNum() {
+
 		System.out.println("시도할 횟수는 몇회인가요?");
-		num = scanner.nextInt();
+		int num = scanner.nextInt();
+
+		while (num < 1) {
+			System.out.println("시도할 횟수를 다시 입력하세요.");
+			num = scanner.nextInt();
+		}
 
 		return num;
 	}
 
-	public void printProcessResult() {
+	public void printProcessResult(List<Car> carList, int num) {
 
 		System.out.println("실행 결과");
 
-		for (int i = 0; i < num; i++) {
-			printProcess();
-		}
+		IntStream.range(0, num).forEach(i -> {
+			carList.stream().forEach(j -> {
+				printProcess(j);
+			});
+			System.out.println();
+		});
+
 	}
 
-	private void printProcess() {
+	private int forwardStep() {
 
-		for (int j = 0; j < racingCar.getCarList().size(); j++) {
-			racingCar.getCarList().get(j).movingOneStep(racingCar.forwardStep());
-			String countingPostionHyphenString = calculatePosition(racingCar.getCarList().get(j).getPosition());
+		Random random = new Random();
+		final int randomNumber = random.nextInt(10); // 0 ~ 9
 
-			System.out.println(racingCar.getCarList().get(j).getName() + " : " + countingPostionHyphenString);
-		}
+		int step = (randomNumber >= 4) ? 1 : 0;
 
-		System.out.println();
+		return step;
+	}
+
+	private void printProcess(Car c) {
+		c.movingOneStep(forwardStep());
+		String countingPostionHyphenString = calculatePosition(c.getPosition());
+		System.out.println(c.getName() + " : " + countingPostionHyphenString);
 	}
 
 	private String calculatePosition(int n) {
@@ -68,25 +77,12 @@ public class CarView {
 		return countPosition;
 	}
 
-	public void printResult() {
+	public void printResult(List<String> winnerList) {
 
-		winnerListSize = racingCar.getWinnerList().size();
-
-		for (int i = 0; i < racingCar.getWinnerList().size(); i++) {
-			resultPrintString += racingCar.getWinnerList().get(i);
-			operationComma(winnerListSize);
-		}
-
+		String resultPrintString = String.join(", ", winnerList);
 		resultPrintString += "가 최종우승했습니다.";
 
 		System.out.println(resultPrintString);
-	}
-
-	private void operationComma(int cnt) {
-		if (cnt >= 2) {
-			resultPrintString += ", ";
-			winnerListSize--;
-		}
 	}
 
 }

@@ -4,67 +4,38 @@ import java.util.*;
 
 public class RacingCar {
 
-	public RacingCar() {
-		carView = new CarView(this);
-		winnerList = new ArrayList<String>();
-	}
-
+	private List<String> carNames = new ArrayList<String>();
 	private List<Car> carList = new ArrayList<Car>();
 	private List<String> winnerList;
+
 	private CarView carView;
-	
-	public void addCarListByName(String carName) {
+	private CarWinner carWinner;
+
+	private int n;
+
+	public RacingCar() {
+		carView = new CarView();
+		carWinner = new CarWinner();
+	}
+
+	private void addCarListByName(String carName) {
 		Car car = new Car(carName);
 		carList.add(car);
 	}
 
-	public int forwardStep() {
-
-		Random random = new Random();
-		final int randomNumber = random.nextInt(10); // 0 ~ 9
-
-		int step = (randomNumber >= 4) ? 1 : 0;
-
-		return step;
-	}
-
-	private void addWinnerList() {
-
-		for (int i = 0; i < carList.size(); i++) {
-			if (carList.get(i).getPosition() == getWinnerPosition()) {
-				String winner = carList.get(i).getName();
-				winnerList.add(winner);
-			}
+	private void addCarList() {
+		for (int i = 0; i < carNames.size(); i++) {
+			addCarListByName(carNames.get(i));
 		}
-	}
-
-	public List<String> getWinnerList() {
-		return winnerList;
-	}
-	
-	public List<Car> getCarList() {
-		return carList;
-	}
-
-	private int getWinnerPosition() {
-
-		int max = 0;
-
-		for (int i = 0; i < carList.size(); i++) {
-			if (max < carList.get(i).getPosition()) {
-				max = carList.get(i).getPosition();
-			}
-		}
-
-		return max;
 	}
 
 	public void run() {
-		carView.inputCarName();
-		carView.inputTryNumAndReturnNum();
-		carView.printProcessResult();
-		addWinnerList();
-		carView.printResult();
+		carNames = carView.inputCarName();
+		n = carView.inputTryNumAndReturnNum();
+		addCarList();
+		carView.printProcessResult(carList, n);
+		winnerList = carWinner.addWinnerList(carList);
+		carView.printResult(winnerList);
 	}
 
 }
